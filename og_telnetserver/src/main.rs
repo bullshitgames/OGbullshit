@@ -16,6 +16,9 @@ async fn main() {
         let tx = tx.clone();
         let mut rx = tx.subscribe();
 
+        let announcement = format!("{}", _addr.ip().to_string() + " has joined us!");
+        tx.send((announcement, _addr)).unwrap();
+
         tokio::spawn(async move {
             let (reader_half, mut writer_half) = socket.split();
             
