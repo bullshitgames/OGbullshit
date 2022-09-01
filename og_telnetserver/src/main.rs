@@ -6,7 +6,7 @@ use std::net::SocketAddr;
 #[tokio::main]
 async fn main() {
     let listener = TcpListener::bind("192.168.1.10:7888").await.unwrap();
-    let welcome_msg = "Welcome to the OG BS prototype chat server.\n\r";
+    let welcome_msg = "Welcome to the OG BS prototype chat server!\n\r";
     let (tx, _rx) = broadcast::channel::<(String, SocketAddr)>(10);   
 
     loop {
@@ -33,7 +33,7 @@ async fn main() {
                         print!("{}", _addr.ip().to_string() + ":" + &_addr.port().to_string() + "> " + &line);
                         line.clear();
                     }
-                    
+
                     msg = rx.recv() => {
                         let (mut mes , other_addr) = msg.unwrap();
 
