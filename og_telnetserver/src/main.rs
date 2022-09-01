@@ -23,7 +23,8 @@ async fn main() {
         let mut sv_rx = sv_tx.subscribe();
 
         let announcement = format!("{}", _addr.ip().to_string() + " has joined us!\n\r");
-        sv_tx.send(announcement).unwrap();
+        sv_tx.send(announcement.clone()).unwrap();
+        print!("{}", announcement);
 
         tokio::spawn(async move {
             let (reader_half, mut writer_half) = socket.split();
@@ -56,7 +57,8 @@ async fn main() {
             }
 
             let announcement = format!("{}", _addr.ip().to_string() + " has left!\n\r");
-            sv_tx.send(announcement).unwrap();
+            sv_tx.send(announcement.clone()).unwrap();
+            print!("{}", announcement);
         });
 
     }
