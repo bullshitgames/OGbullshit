@@ -19,6 +19,7 @@ async fn main() {
         let tx = tx.clone();
         let mut rx = tx.subscribe();
 
+        let sv_tx = sv_tx.clone();
         let mut sv_rx = sv_tx.subscribe();
 
         let announcement = format!("{}", _addr.ip().to_string() + " has joined us!\n\r");
@@ -53,6 +54,9 @@ async fn main() {
                 }
                 
             }
+
+            let announcement = format!("{}", _addr.ip().to_string() + " has left!\n\r");
+            sv_tx.send(announcement).unwrap();
         });
 
     }
