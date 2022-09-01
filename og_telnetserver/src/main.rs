@@ -33,6 +33,7 @@ async fn main() {
                         print!("{}", _addr.ip().to_string() + ":" + &_addr.port().to_string() + "> " + &line);
                         line.clear();
                     }
+                    
                     msg = rx.recv() => {
                         let (mut mes , other_addr) = msg.unwrap();
 
