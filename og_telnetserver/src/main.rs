@@ -5,7 +5,8 @@ use std::net::SocketAddr;
 
 #[tokio::main]
 async fn main() {
-    let listener = TcpListener::bind("localhost:8080").await.unwrap();
+    let listener = TcpListener::bind("192.168.1.10:7888").await.unwrap();
+    let welcome_msg = "Welcome to the OG BS prototype chat server.\n\r";
     let (tx, _rx) = broadcast::channel::<(String, SocketAddr)>(10);   
 
     loop {
@@ -17,7 +18,9 @@ async fn main() {
 
         tokio::spawn(async move {
             let (reader_half, mut writer_half) = socket.split();
-    
+            
+            writer_half.write_all(welcome_msg.as_bytes()).await.unwrap();
+
             let mut reader = BufReader::new(reader_half);
             let mut line = String::new();
     
@@ -27,6 +30,7 @@ async fn main() {
                         if read.unwrap() == 0 { break; }
 
                         tx.send( (line.clone(), _addr) ).unwrap();
+                        print!("{}", _addr.ip().to_string() + ":" + &_addr.port().to_string() + "> " + &line);
                         line.clear();
                     }
                     msg = rx.recv() => {
