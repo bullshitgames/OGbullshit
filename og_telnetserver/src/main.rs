@@ -21,7 +21,7 @@ async fn main() {
 
         let mut sv_rx = sv_tx.subscribe();
 
-        let announcement = format!("{}", _addr.ip().to_string() + " has joined us!");
+        let announcement = format!("{}", _addr.ip().to_string() + " has joined us!\n\r");
         sv_tx.send(announcement).unwrap();
 
         tokio::spawn(async move {
