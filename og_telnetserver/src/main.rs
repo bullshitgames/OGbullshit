@@ -12,6 +12,8 @@ async fn main() {
     let (tx, _rx) = broadcast::channel::<(String, SocketAddr)>(10);   
     let (sv_tx, _sv_rx) = broadcast::channel(10);
 
+    let quit_msg = "QUIT";
+
     loop {
         
         let (mut socket, _addr) = listener.accept().await.unwrap();
@@ -36,7 +38,7 @@ async fn main() {
             loop {
                 tokio::select!{
                     bytes_read = reader.read_line(&mut line) => {
-                        if bytes_read.unwrap() == 0 { break; }
+                        if bytes_read.unwrap() == 0 || line == quit_msg { break; }
 
                         handle_client_input(&mut line, &tx, _addr);
                     }
