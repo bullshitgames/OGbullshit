@@ -10,6 +10,7 @@ async fn main() {
     listener.set_ttl(100).unwrap();
     let welcome_msg = "Welcome to the OG BS prototype chat server!\n\r";
     let (tx, _rx) = broadcast::channel::<(String, SocketAddr)>(10);   
+    let (sv_tx, _sv_rx) = broadcast::channel(10);
 
     loop {
         
@@ -18,8 +19,10 @@ async fn main() {
         let tx = tx.clone();
         let mut rx = tx.subscribe();
 
+        let mut sv_rx = sv_tx.subscribe();
+
         let announcement = format!("{}", _addr.ip().to_string() + " has joined us!");
-        tx.send((announcement, _addr)).unwrap();
+        sv_tx.send(announcement).unwrap();
 
         tokio::spawn(async move {
             let (reader_half, mut writer_half) = socket.split();
@@ -40,6 +43,12 @@ async fn main() {
                         let (mes , other_addr) = msg.unwrap();
 
                         handle_broadcast_recv(_addr, other_addr, mes, &mut writer_half).await;
+                    }
+
+                    msg = sv_rx.recv() => {
+                        let msg = msg.unwrap();
+
+                        handle_announcement_recv(_addr, msg, &mut writer_half).await;
                     }
                 }
                 
@@ -62,4 +71,10 @@ async fn handle_broadcast_recv(_addr : SocketAddr, _recved_addr : SocketAddr, me
         let mes = _recved_addr.ip().to_string() + ":" + &_recved_addr.port().to_string() + "> " + &mes;
         writer_half.write_all(mes.as_bytes()).await.unwrap();
     }
+}
+
+
+async fn handle_announcement_recv(_addr : SocketAddr, mes : String, writer_half : &mut WriteHalf<'_>) {
+    let mes = "SERVER > ".to_string() + &mes;
+    writer_half.write_all(mes.as_bytes()).await.unwrap();
 }
