@@ -12,7 +12,7 @@ async fn main() {
     let (tx, _rx) = broadcast::channel::<(String, SocketAddr)>(10);   
     let (sv_tx, _sv_rx) = broadcast::channel(10);
 
-    let quit_msg = "QUIT";
+    let quit_msg = "QUIT\n\r";
 
     loop {
         
