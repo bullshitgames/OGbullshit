@@ -1,0 +1,7 @@
+#!/bin/bash
+
+SERVER_SOURCE_CODE_PATH=~/Desktop/OGbullshit/og_telnetserver/
+
+cd $SERVER_SOURCE_CODE_PATH
+git pull
+cargo run --release

@@ -4,24 +4,30 @@ use tokio::net::tcp::WriteHalf;
 use tokio::sync::broadcast::{self, Sender}; 
 use std::net::SocketAddr; 
 
+mod server;
+
+use crate::server::*;
+
 #[tokio::main]
 async fn main() {
+    /* 
     let listener = TcpListener::bind("192.168.1.10:7888").await.unwrap();
-    listener.set_ttl(100).unwrap();
-    let welcome_msg = "Welcome to the OG BS prototype chat server!\n\r";
-    let (tx, _rx) = broadcast::channel::<(String, SocketAddr)>(10);   
-    let (sv_tx, _sv_rx) = broadcast::channel(10);
 
+    let welcome_msg = "Welcome to the OG BS prototype chat server!\n\r";
     let quit_msg = "QUIT";
 
+    let (tx, _rx) = broadcast::channel::<(String, SocketAddr)>(10);   
+    let (_sv_tx, _sv_rx) = broadcast::channel(10);
+
+    
+
     loop {
-        
         let (mut socket, _addr) = listener.accept().await.unwrap();
 
         let tx = tx.clone();
         let mut rx = tx.subscribe();
 
-        let sv_tx = sv_tx.clone();
+        let sv_tx = _sv_tx.clone();
         let mut sv_rx = sv_tx.subscribe();
 
         let announcement = format!("{}", _addr.ip().to_string() + " has joined us!\n\r");
@@ -64,8 +70,13 @@ async fn main() {
         });
 
     }
+
+    */
+
+    let server = ChatServer::new("192.168.1.10:7888");
 }
 
+/*
 
 pub fn handle_client_input(line: &mut String, tx: &Sender<(String, SocketAddr)>, _addr : SocketAddr){
     tx.send( (line.clone(), _addr) ).unwrap();
@@ -86,3 +97,5 @@ async fn handle_announcement_recv(_addr : SocketAddr, mes : String, writer_half 
     let mes = "SERVER > ".to_string() + &mes;
     writer_half.write_all(mes.as_bytes()).await.unwrap();
 }
+
+*/
