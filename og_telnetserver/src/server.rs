@@ -57,14 +57,14 @@ impl ChatServer{
     }
 
 
-    pub fn start(&mut self){
+    pub async fn start(&mut self){
 
         tokio::spawn( async move {
             ChatServer::get_admin_commands()
         });
 
         self._alive = true;
-        self.server_loop();
+        self.server_loop().await;
     }
 
     async fn get_admin_commands(){

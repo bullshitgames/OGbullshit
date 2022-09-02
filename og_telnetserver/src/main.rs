@@ -75,7 +75,7 @@ async fn main() {
 
     let mut server = ChatServer::new("192.168.1.10:7888").await;
 
-    server.start();
+    server.start().await;
 
 }
 
