@@ -37,7 +37,7 @@ impl WatchLogger{
 
         let time = format!("{:?} : ",date_time);
 
-        self._filehandler.write(time + &msg + "\n");
+        self._filehandler.write(time + &msg);
     }
 
 }
