@@ -92,8 +92,8 @@ impl ChatServer{
             let mut client_rx = comm.client_tx.subscribe();
             let mut server_rx = comm.server_tx.subscribe();
     
-            let announcement = format!("{}", _addr.ip().to_string() + " has joined us!\n\r");
-            comm.server_tx.send(announcement.clone()).unwrap();
+            let announcement = format!("{}", _addr.ip().to_string() + " has joined us!");
+            comm.server_tx.send(announcement.clone() + "\n\r").unwrap();
             comm.logger_tx.send(announcement).unwrap();
 
             let welcome_message = self.welcome_message.clone();
@@ -128,8 +128,8 @@ impl ChatServer{
                     
                 }
     
-                let announcement = format!("{}", _addr.ip().to_string() + " has left!\n\r");
-                comm.server_tx.send(announcement.clone()).unwrap();
+                let announcement = format!("{}", _addr.ip().to_string() + " has left!");
+                comm.server_tx.send(announcement.clone() + "\n\r").unwrap();
                 comm.logger_tx.send(announcement).unwrap();
             });
     
@@ -138,6 +138,9 @@ impl ChatServer{
 
     async fn run_logger(&self){
         let mut rx = self._communicator.logger_tx.subscribe();
+
+        self._communicator.logger_tx.send("Server started.".to_string()).unwrap();
+
         tokio::spawn( async move {
             let mut logger = WatchLogger::new();
             logger.start(None);

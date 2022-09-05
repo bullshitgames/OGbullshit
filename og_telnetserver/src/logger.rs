@@ -44,6 +44,6 @@ impl WatchLogger{
 
 impl Drop for WatchLogger{
     fn drop(&mut self){
-        self.stop(None);
+        self.stop(Some("Logger closed.".to_string()));
     }
 }
