@@ -1,7 +1,7 @@
 
 use crate::filehandler::FileHandler;
 
-const DEFAULT_LOG_PATH  : &str = "~/.server_logs/log.txt";
+const DEFAULT_LOG_PATH  : &str = "~/server_logs/log.txt";
 
 pub struct WatchLogger{
     _filehandler: FileHandler,
