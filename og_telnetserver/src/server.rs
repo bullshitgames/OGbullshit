@@ -1,9 +1,11 @@
 use tokio::net::TcpListener;    
 use tokio::io::{BufReader, AsyncBufReadExt, AsyncWriteExt};   
 use tokio::net::tcp::WriteHalf;
-use tokio::sync::broadcast::{self, Sender, Receiver};
+use tokio::sync::broadcast::{self, Sender};
 use tokio::task::JoinHandle; 
 use std::net::SocketAddr; 
+
+use crate::filehandler::FileHandler;
 
 pub trait Server{
     fn start();
@@ -15,14 +17,14 @@ pub struct ChatServer{
     welcome_message : String,
     
     client_tx : Sender<(String, SocketAddr)>,
-    client_blacklist : Vec<SocketAddr>,
 
     server_tx : Sender<String>,
-    server_blacklist : Vec<SocketAddr>,
 
     _alive : bool,
 
-    join_handles : Vec<JoinHandle<()>>,
+    //join_handles : Vec<JoinHandle<()>>,
+
+    log_path : String,
 
 }
 
@@ -39,7 +41,7 @@ impl ChatServer{
         let (c_tx, _) = broadcast::channel::<(String, SocketAddr)>(10);
         let (s_tx, _) = broadcast::channel::<String>(10);
         
-        let new_server = ChatServer{
+        let mut new_server = ChatServer{
 
             welcome_message : "Welcome to the OG BS prototype chat server!\n\r".to_string(),
             listener : listener,
@@ -47,17 +49,19 @@ impl ChatServer{
             client_tx : c_tx,
             server_tx : s_tx,
 
-            client_blacklist : Vec::new(),
-            server_blacklist : Vec::new(),
-
             _alive : false,
-            join_handles : Vec::new(),
+            log_path: "~/.server_logs/log.txt".to_string(),
+
+            //join_handles : Vec::new(),
         };
+
+        let path = new_server.log_path.clone();
+
         new_server
     }
 
 
-    pub async fn start(&mut self){
+    pub async fn run(&mut self){
 
         tokio::spawn( async move {
             ChatServer::get_admin_commands()
@@ -65,6 +69,7 @@ impl ChatServer{
 
         self._alive = true;
         self.server_loop().await;
+
     }
 
     async fn get_admin_commands(){
@@ -86,7 +91,7 @@ impl ChatServer{
             print!("{}", announcement);
 
             let welcome_message = self.welcome_message.clone();
-    
+
             tokio::spawn(async move {
                 let (reader_half, mut writer_half) = socket.split();
                 writer_half.write_all(welcome_message.as_bytes()).await.unwrap();
@@ -124,7 +129,6 @@ impl ChatServer{
     
         }
     }
-
 
 
     fn handle_client_input(line: &mut String, tx: &Sender<(String, SocketAddr)>, _addr : SocketAddr){
