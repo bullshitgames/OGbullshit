@@ -1,5 +1,6 @@
 mod server;
 mod filehandler;
+mod logger;
 
 use crate::server::*;
 

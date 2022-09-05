@@ -9,10 +9,10 @@ pub struct FileHandler{
 
 impl FileHandler{
 
-    pub fn new() -> FileHandler{
+    pub fn new(path: String) -> FileHandler{
         FileHandler{
             _file : None,
-            path : String::new(),
+            path : path,
         } 
     }
 
@@ -55,10 +55,4 @@ impl FileHandler{
 
     pub fn close(&mut self) {self._file = None;}
 
-    async fn run_logger(path : String){
-        let mut fh = FileHandler::new();
-        fh.set_path(path);
-
-
-    }
 }
