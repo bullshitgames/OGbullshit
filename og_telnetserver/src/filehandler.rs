@@ -25,7 +25,7 @@ impl FileHandler{
             .append(true)
             .create(true)
             .open(self.path.clone())
-            .expect("Cannot open file."));
+            .expect(&format!("Cannot open file at {}", self.path)));
     }
 
     pub fn write(&mut self, msg : String) {
